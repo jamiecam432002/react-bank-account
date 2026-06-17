@@ -10,12 +10,15 @@ function AccountOperations() {
 	const [currency, setCurrency] = useState('USD');
 
 	const dispatch = useDispatch();
-	const { loan } = useSelector((store) => store.account);
+	const { loan, loanPurpose: currentLoanPurpose } = useSelector(
+		(store) => store.account,
+	);
 
 	function handleDeposit() {
 		if (!depositAmount) return;
-		dispatch(deposit(depositAmount));
+		dispatch(deposit(depositAmount, currency));
 		setDepositAmount('');
+		setCurrency('USD');
 	}
 
 	function handleWithdrawal() {
@@ -89,10 +92,14 @@ function AccountOperations() {
 					<button onClick={handleRequestLoan}>Request loan</button>
 				</div>
 
-				<div>
-					<span>Pay back $X</span>
-					<button onClick={handlePayLoan}>Pay loan</button>
-				</div>
+				{loan > 0 && (
+					<div>
+						<span>
+							Pay back ${loan}({currentLoanPurpose})
+						</span>
+						<button onClick={handlePayLoan}>Pay loan</button>
+					</div>
+				)}
 			</div>
 		</div>
 	);
